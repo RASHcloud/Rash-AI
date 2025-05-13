@@ -7,67 +7,28 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Arial Rounded MT Bold', sans-serif;
+      font-family: Arial, sans-serif;
       background-color: black;
       color: white;
     }
 
-    /* Neon Blue 3D Effect */
     .top-left, .top-right {
-      font-size: 48px;
+      font-size: 32px;
       font-weight: bold;
       padding: 10px 20px;
       position: fixed;
-      text-shadow: 
-        0 0 5px #00ffff,
-        0 0 10px #00ffff,
-        0 0 15px #00ffff,
-        0 0 20px #00ffff,
-        0 0 25px #00ffff,
-        0 0 30px #00ffff,
-        0 0 35px #00ffff;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
     }
 
-    .top-left {
-      top: 20px;
-      left: 20px;
-    }
-
-    .top-right {
-      top: 20px;
-      right: 20px;
-    }
-
-    .ra, .thumbs-up {
-      font-size: 36px;
-      padding: 10px 20px;
-      border-radius: 20px;
-      background: white;
-      color: black;
-      font-weight: bold;
-      box-shadow: 0 5px 15px rgba(255,255,255,0.2);
-    }
-
-    .ra {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      cursor: pointer;
-    }
-
-    .thumbs-up {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      cursor: pointer;
-    }
+    .top-left { top: 10px; left: 10px; }
+    .top-right { top: 10px; right: 10px; }
 
     #chatbox {
       max-width: 700px;
-      margin: 120px auto 0 auto;
+      margin: 100px auto 0;
       padding: 20px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 10px;
       min-height: 300px;
       overflow-y: auto;
     }
@@ -76,143 +37,89 @@
       background-color: white;
       color: black;
       margin: 10px 0;
-      padding: 15px;
-      border-radius: 20px;
+      padding: 10px;
+      border-radius: 10px;
       max-width: 80%;
-      word-wrap: break-word;
     }
 
     #userInput {
-      display: block;
       width: 60%;
-      margin: 20px auto 10px auto;
-      padding: 15px;
-      font-size: 18px;
-      border-radius: 15px;
-      border: none;
+      margin: 20px auto;
+      display: block;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 16px;
     }
 
     button {
       display: block;
-      margin: 0 auto;
-      padding: 12px 30px;
-      font-size: 18px;
-      border-radius: 15px;
+      margin: 10px auto;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
       background-color: white;
       color: black;
       font-weight: bold;
-      border: none;
       cursor: pointer;
-    }
-
-    .ra-popup {
-      display: none;
-      position: fixed;
-      bottom: 100px;
-      left: 20px;
-      background-color: white;
-      color: black;
-      font-size: 24px;
-      padding: 25px 30px;
-      border-radius: 25px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-      max-width: 300px;
-      z-index: 1000;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top corners -->
   <div class="top-left">RA CORE</div>
   <div class="top-right">VIRTUAL INTELLIGENCE</div>
 
-  <!-- Chat UI -->
   <div id="chatbox"></div>
-  <input id="userInput" type="text" placeholder="Type your message..." />
-  <button id="sendButton">Send</button>
+  <input type="text" id="userInput" placeholder="Type your message..." />
+  <button onclick="sendMessage()">Send</button>
 
-  <!-- Bottom corners -->
-  <div class="ra" onclick="showRABubble()">R.A.</div>
-  <div class="thumbs-up" onclick="thumbsUpLarge()">👍</div>
-  <div id="raPopup" class="ra-popup">This is R.A.'s bubble message!</div>
-
-  <!-- Script -->
   <script>
-    // Add event listener to the "Send" button
-    document.getElementById('sendButton').addEventListener('click', sendMessage);
-
     function sendMessage() {
-      const input = document.getElementById("userInput").value;
+      const inputBox = document.getElementById("userInput");
       const chatbox = document.getElementById("chatbox");
+      const userMessage = inputBox.value.trim();
 
-      if (!input.trim()) return;
+      if (userMessage === "") return;
 
-      // Display user message in the chatbox
-      chatbox.innerHTML += "<div><strong>You:</strong> " + input + "</div>";
-      
-      // Clear the input field after sending
-      document.getElementById("userInput").value = "";
+      chatbox.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+      inputBox.value = "";
 
-      // Generate bot response
-      let response = processUserInput(input);
+      const reply = getBotResponse(userMessage);
+      chatbox.innerHTML += `<div><strong>Bot:</strong> ${reply}</div>`;
 
-      // Display bot's response in the chatbox
-      chatbox.innerHTML += "<div><strong>Bot:</strong> " + response + "</div>";
-      chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+      chatbox.scrollTop = chatbox.scrollHeight;
     }
 
-    function processUserInput(input) {
-      const lowerInput = input.toLowerCase();
-      let response = "Sorry, I didn't understand that. Can you ask me something else?";
+    function getBotResponse(message) {
+      const msg = message.toLowerCase();
 
-      // New responses for "master" and "creator" questions
-      if (lowerInput.includes("who is your master") || lowerInput.includes("who is your creator")) {
-        response = "Rasheed, my smart boss!";
-      }
-
-      if (lowerInput.includes("hello") || lowerInput.includes("hi")) {
-        response = "Hello! How can I assist you today?";
-      } else if (lowerInput.includes("bye")) {
-        response = "Goodbye! Have a great day!";
-      } else if (lowerInput.includes("time")) {
-        response = "The current time is " + new Date().toLocaleTimeString();
-      } else if (lowerInput.includes("date")) {
-        response = "Today's date is " + new Date().toLocaleDateString();
-      } else if (lowerInput.includes("weather")) {
-        response = "I can't check live weather, but you can check it on your favorite weather site!";
-      } else if (isMathEquation(lowerInput)) {
+      if (msg.includes("hello") || msg.includes("hi")) {
+        return "Hello! How can I assist you today?";
+      } else if (msg.includes("bye")) {
+        return "Goodbye! Have a great day!";
+      } else if (msg.includes("time")) {
+        return "The current time is " + new Date().toLocaleTimeString();
+      } else if (msg.includes("date")) {
+        return "Today's date is " + new Date().toLocaleDateString();
+      } else if (msg.includes("creator") || msg.includes("master")) {
+        return "Rasheed, my smart boss!";
+      } else if (msg.includes("joke")) {
+        return "Why did the computer go to therapy? Because it had too many bytes!";
+      } else if (isMathEquation(msg)) {
         try {
-          response = evaluateMath(lowerInput);
+          return eval(msg.replace(/\^/g, "**"));
         } catch {
-          response = "Oops! Something went wrong with the math.";
+          return "Oops! That math doesn't work.";
         }
-      } else if (lowerInput.includes("favorite color")) {
-        response = "I don't have preferences, but I think blue is a nice color!";
-      } else if (lowerInput.includes("tell me a joke")) {
-        response = "Why don't scientists trust atoms? Because they make up everything!";
+      } else {
+        return "I'm not sure how to respond to that.";
       }
-
-      return response;
     }
 
     function isMathEquation(input) {
-      return /\d+[\+\-\*\/\^]\d+/.test(input);
-    }
-
-    function evaluateMath(input) {
-      input = input.replace(/\^/g, '**');
-      return eval(input);
-    }
-
-    function thumbsUpLarge() {
-      alert("Thanks for the thumbs-up! 👍");
-    }
-
-    function showRABubble() {
-      const popup = document.getElementById("raPopup");
-      popup.style.display = popup.style.display === "block" ? "none" : "block";
+      return /[\d\.\s]+[\+\-\*\/\^][\d\.\s]+/.test(input);
     }
   </script>
+
 </body>
 </html>
