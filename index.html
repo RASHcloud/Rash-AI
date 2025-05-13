@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RA CORE - Virtual Intelligence</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+      background-color: black;
+      color: white;
+    }
+
+    /* Neon Blue 3D Effect */
+    .top-left, .top-right {
+      font-size: 48px;
+      font-weight: bold;
+      padding: 10px 20px;
+      position: fixed;
+      text-shadow: 
+        0 0 5px #00ffff,
+        0 0 10px #00ffff,
+        0 0 15px #00ffff,
+        0 0 20px #00ffff,
+        0 0 25px #00ffff,
+        0 0 30px #00ffff,
+        0 0 35px #00ffff;
+    }
+
+    .top-left {
+      top: 20px;
+      left: 20px;
+    }
+
+    .top-right {
+      top: 20px;
+      right: 20px;
+    }
+
+    .ra, .thumbs-up {
+      font-size: 36px;
+      padding: 10px 20px;
+      border-radius: 20px;
+      background: white;
+      color: black;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+    }
+
+    .ra {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      cursor: pointer;
+    }
+
+    .thumbs-up {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      cursor: pointer;
+    }
+
+    #chatbox {
+      max-width: 700px;
+      margin: 120px auto 0 auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      min-height: 300px;
+      overflow-y: auto;
+    }
+
+    #chatbox div {
+      background-color: white;
+      color: black;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 20px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    #userInput {
+      display: block;
+      width: 60%;
+      margin: 20px auto 10px auto;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 15px;
+      border: none;
+    }
+
+    button {
+      display: block;
+      margin: 0 auto;
+      padding: 12px 30px;
+      font-size: 18px;
+      border-radius: 15px;
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    .ra-popup {
+      display: none;
+      position: fixed;
+      bottom: 100px;
+      left: 20px;
+      background-color: white;
+      color: black;
+      font-size: 24px;
+      padding: 25px 30px;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      max-width: 300px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top corners -->
+  <div class="top-left">RA CORE</div>
+  <div class="top-right">VIRTUAL INTELLIGENCE</div>
+
+  <!-- Chat UI -->
+  <div id="chatbox"></div>
+  <input id="userInput" type="text" placeholder="Type your message..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <!-- Bottom corners -->
+  <div class="ra" onclick="showRABubble()">R.A.</div>
+  <div class="thumbs-up" onclick="thumbsUpLarge()">👍</div>
+  <div id="raPopup" class="ra-popup">This is R.A.'s bubble message!</div>
+
+  <!-- Script -->
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("userInput").value;
+      const chatbox = document.getElementById("chatbox");
+
+      if (!input.trim()) return;
+
+      chatbox.innerHTML += "<div><strong>You:</strong> " + input + "</div>";
+      document.getElementById("userInput").value = "";
+
+      let response = processUserInput(input);
+      chatbox.innerHTML += "<div><strong>Bot:</strong> " + response + "</div>";
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function processUserInput(input) {
+      const lowerInput = input.toLowerCase();
+      let response = "Sorry, I didn't understand that. Can you ask me something else?";
+
+      if (lowerInput.includes("hello") || lowerInput.includes("hi")) {
+        response = "Hello! How can I assist you today?";
+      } else if (lowerInput.includes("bye")) {
+        response = "Goodbye! Have a great day!";
+      } else if (lowerInput.includes("time")) {
+        response = "The current time is " + new Date().toLocaleTimeString();
+      } else if (lowerInput.includes("date")) {
+        response = "Today's date is " + new Date().toLocaleDateString();
+      } else if (lowerInput.includes("weather")) {
+        response = "I can't check live weather, but you can check it on your favorite weather site!";
+      } else if (isMathEquation(lowerInput)) {
+        try {
+          response = evaluateMath(lowerInput);
+        } catch {
+          response = "Oops! Something went wrong with the math.";
+        }
+      } else if (lowerInput.includes("favorite color")) {
+        response = "I don't have preferences, but I think blue is a nice color!";
+      } else if (lowerInput.includes("tell me a joke")) {
+        response = "Why don't scientists trust atoms? Because they make up everything!";
+      }
+
+      return response;
+    }
+
+    function isMathEquation(input) {
+      return /\d+[\+\-\*\/\^]\d+/.test(input);
+    }
+
+    function evaluateMath(input) {
+      input = input.replace(/\^/g, '**');
+      return eval(input);
+    }
+
+    function thumbsUpLarge() {
+      alert("Thanks for the thumbs-up! 👍");
+    }
+
+    function showRABubble() {
+      const popup = document.getElementById("raPopup");
+      popup.style.display = popup.style.display === "block" ? "none" : "block";
+    }
+  </script>
+</body>
+</html>
